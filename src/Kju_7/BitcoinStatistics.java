@@ -21,19 +21,21 @@ import java.util.Arrays;
 public class BitcoinStatistics {
     public static double[][] getMinAvgMax(int discard, double[][] data) {
         double[][] result = new double[data.length][];
+        double totalSum = 0.0;
+        long totalQuantity = 0;
         for (int i=0; i< data.length;i++) {
             double[] array = Arrays.copyOfRange(data[i], discard, data[i].length - discard);
             Arrays.sort(array);
             double sum = Arrays.stream(array).sum();
             result[i] = new double[]{array[0], sum / array.length, array[array.length - 1]};
+            totalSum+=sum;
+            totalQuantity+=array.length;
         }
         double min = Arrays.stream(result)
                 .mapToDouble(d ->d[0])
                 .min()
                 .getAsDouble();
-        double ave = Arrays.stream(result)
-                .mapToDouble(d ->d[1])
-                .sum()/ result.length;
+        double ave = totalSum/totalQuantity;
         double max = Arrays.stream(result)
                 .mapToDouble(d ->d[2])
                 .max()
@@ -44,8 +46,8 @@ public class BitcoinStatistics {
     }
 
     public static void main(String[] args) {
-        double[][] data = {{0.0,1.0,2.0,3.0,4.0,5.0}, {0.0,1.2,2.0,3.0,4.0}, {0.0,1.4,2.0,3.0}};
-        System.out.println(Arrays.deepToString(getMinAvgMax(1,data)));
+        double[][] data = {{800,1200,2100,4100,1300,700}, {1000,1500,4500,5000,5800,2000,1500}};
+        System.out.println(Arrays.deepToString(getMinAvgMax(2,data)));
     }
 }
 
