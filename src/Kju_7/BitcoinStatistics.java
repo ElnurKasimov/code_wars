@@ -17,9 +17,49 @@ package Kju_7;
 //array 2 = 2100,4300,5800 // total min, avg, max (without discarded values)
 
 
+import java.util.Arrays;
+import java.util.stream.DoubleStream;
+import java.util.stream.Stream;
+
 public class BitcoinStatistics {
     public static double[][] getMinAvgMax(int discard, double[][] data) {
-        return new double[][] {{0.0,0.0,0.0}, {0.0,0.0,0.0}};
+        Double[][] result = new Double[data.length+1][] ;
+        for (int i=0; i< data.length;i++) {
+            double[] array = Arrays.copyOfRange(data[i], discard,data[i].length - discard);
+            result[i] = new Double[]{Arrays.stream(array).min().getAsDouble(),
+                                     Arrays.stream(array).average().getAsDouble(),
+                                     Arrays.stream(array).max().getAsDouble()};
+        }
+            result[data.length][0] = Arrays.stream(result)
+                    .mapToDouble(r -> r[0])
+                    .min()
+                    .getAsDouble();
+            result[data.length][1] = Arrays.stream(result)
+                    .mapToDouble(r -> r[1])
+                    .average()
+                    .getAsDouble();
+            result[data.length][2] = Arrays.stream(result)
+                    .mapToDouble(r -> r[2])
+                    .max()
+                    .getAsDouble();
+        double[][] output = new double[result.length][];
+        for(int i=0;i< result.length+1;i++) {
+            output[i] = Stream.of(result[i])
+                    .mapToDouble(d -> d.doubleValue())
+                    .toArray();
+        }
+        return output;
+    }
+
+    public static void main(String[] args) {
+        double[][] data = {{0.0,1.0,2.0,3.0,4.0,5.0}, {0.0,1.0,2.0,3.0,4.0}, {0.0,1.0,2.0,3.0}};
+//        System.out.println(Arrays.deepToString(data));
+//        for (int i=0; i< data.length;i++) {
+//            double[] array = Arrays.copyOfRange(data[i], discard,data[i].length - discard);
+//            System.out.println(Arrays.toString(array));
+//        }
+        System.out.println(getMinAvgMax(1, data));
+
     }
 }
 
