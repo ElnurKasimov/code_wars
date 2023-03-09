@@ -30,6 +30,7 @@ public class BitcoinStatistics {
                                      Arrays.stream(array).average().getAsDouble(),
                                      Arrays.stream(array).max().getAsDouble()};
         }
+        result[data.length] = new Double[]{0.0, 0.0, 0.0};
             result[data.length][0] = Arrays.stream(result)
                     .mapToDouble(r -> r[0])
                     .min()
@@ -43,7 +44,7 @@ public class BitcoinStatistics {
                     .max()
                     .getAsDouble();
         double[][] output = new double[result.length][];
-        for(int i=0;i< result.length+1;i++) {
+        for(int i=0;i< result.length;i++) {
             output[i] = Stream.of(result[i])
                     .mapToDouble(d -> d.doubleValue())
                     .toArray();
@@ -53,13 +54,17 @@ public class BitcoinStatistics {
 
     public static void main(String[] args) {
         double[][] data = {{0.0,1.0,2.0,3.0,4.0,5.0}, {0.0,1.0,2.0,3.0,4.0}, {0.0,1.0,2.0,3.0}};
-//        System.out.println(Arrays.deepToString(data));
-//        for (int i=0; i< data.length;i++) {
-//            double[] array = Arrays.copyOfRange(data[i], discard,data[i].length - discard);
-//            System.out.println(Arrays.toString(array));
-//        }
-        System.out.println(getMinAvgMax(1, data));
-
+        int discard = 1;
+        Double[][] result = new Double[data.length+1][];
+        result[data.length] = new Double[]{0.0, 0.0, 0.0};
+        for (int i=0; i< data.length;i++) {
+            double[] array = Arrays.copyOfRange(data[i], discard,data[i].length - discard);
+            result[i] = new Double[]{Arrays.stream(array).min().getAsDouble(),
+                    Arrays.stream(array).average().getAsDouble(),
+                    Arrays.stream(array).max().getAsDouble()};
+        }
+        System.out.println(Arrays.deepToString(result));
+        System.out.println(Arrays.deepToString(getMinAvgMax(1,data)));
     }
 }
 
