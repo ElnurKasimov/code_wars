@@ -16,54 +16,35 @@ package Kju_7;
 //array 1 = 4500,5100,5800 // min, avg, max for input array 1 (without discarded values)
 //array 2 = 2100,4300,5800 // total min, avg, max (without discarded values)
 
-
 import java.util.Arrays;
-import java.util.stream.DoubleStream;
-import java.util.stream.Stream;
 
 public class BitcoinStatistics {
     public static double[][] getMinAvgMax(int discard, double[][] data) {
-        Double[][] result = new Double[data.length+1][] ;
+        double[][] result = new double[data.length][];
         for (int i=0; i< data.length;i++) {
-            double[] array = Arrays.copyOfRange(data[i], discard,data[i].length - discard);
-            result[i] = new Double[]{Arrays.stream(array).min().getAsDouble(),
-                                     Arrays.stream(array).average().getAsDouble(),
-                                     Arrays.stream(array).max().getAsDouble()};
+            double[] array = Arrays.copyOfRange(data[i], discard, data[i].length - discard);
+            Arrays.sort(array);
+            double sum = Arrays.stream(array).sum();
+            result[i] = new double[]{array[0], sum / array.length, array[array.length - 1]};
         }
-        result[data.length] = new Double[]{0.0, 0.0, 0.0};
-            result[data.length][0] = Arrays.stream(result)
-                    .mapToDouble(r -> r[0])
-                    .min()
-                    .getAsDouble();
-            result[data.length][1] = Arrays.stream(result)
-                    .mapToDouble(r -> r[1])
-                    .average()
-                    .getAsDouble();
-            result[data.length][2] = Arrays.stream(result)
-                    .mapToDouble(r -> r[2])
-                    .max()
-                    .getAsDouble();
-        double[][] output = new double[result.length][];
-        for(int i=0;i< result.length;i++) {
-            output[i] = Stream.of(result[i])
-                    .mapToDouble(d -> d.doubleValue())
-                    .toArray();
-        }
-        return output;
+        double min = Arrays.stream(result)
+                .mapToDouble(d ->d[0])
+                .min()
+                .getAsDouble();
+        double ave = Arrays.stream(result)
+                .mapToDouble(d ->d[1])
+                .sum()/ result.length;
+        double max = Arrays.stream(result)
+                .mapToDouble(d ->d[2])
+                .max()
+                .getAsDouble();
+        double[][] finalresult = Arrays.copyOf(result, result.length+1);
+        finalresult[result.length] = new double[] {min, ave, max};
+        return finalresult;
     }
 
     public static void main(String[] args) {
-        double[][] data = {{0.0,1.0,2.0,3.0,4.0,5.0}, {0.0,1.0,2.0,3.0,4.0}, {0.0,1.0,2.0,3.0}};
-        int discard = 1;
-        Double[][] result = new Double[data.length+1][];
-        result[data.length] = new Double[]{0.0, 0.0, 0.0};
-        for (int i=0; i< data.length;i++) {
-            double[] array = Arrays.copyOfRange(data[i], discard,data[i].length - discard);
-            result[i] = new Double[]{Arrays.stream(array).min().getAsDouble(),
-                    Arrays.stream(array).average().getAsDouble(),
-                    Arrays.stream(array).max().getAsDouble()};
-        }
-        System.out.println(Arrays.deepToString(result));
+        double[][] data = {{0.0,1.0,2.0,3.0,4.0,5.0}, {0.0,1.2,2.0,3.0,4.0}, {0.0,1.4,2.0,3.0}};
         System.out.println(Arrays.deepToString(getMinAvgMax(1,data)));
     }
 }
