@@ -10,14 +10,34 @@ package Kju_7;
 
 // Kata name - Array.diff
 
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 public class ArrayDiff {
     public static int[] arrayDiff(int[] a, int[] b) {
-        // Your code here
-        return a;
+        List<Integer> integers = Arrays.stream(a).boxed().toList();
+        Iterator<Integer> it = integers.iterator();
+        while(it.hasNext()) {
+            Integer checked = it.next();
+            for (int j : b) {
+                if (checked == j) {
+                    it.remove();
+                    break;
+                }
+            }
+        }
+        int[] result = new int[integers.size()];
+        for (int i = 0; i < integers.size(); i++) {
+            result[i] = integers.get(i);
+        }
+        return result;
     }
 
     public static void main(String[] args) {
-
+        int[] a = {1, 2, 3, 4, 5};
+        int[] b = {1, 2};
+        System.out.println(Arrays.toString(arrayDiff(a, b)));
     }
 
 }
